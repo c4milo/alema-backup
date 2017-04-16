@@ -6,8 +6,8 @@ BLDTAGS := -tags ""
 help: ## Shows this help text
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-dev:
-	go build
+dev: ## Builds dev version
+	go build -o $(NAME)
 
 build: ## Generates a build for darwin and windows into build/ folder
 	@rm -rf build/
@@ -24,7 +24,7 @@ dist: build ## Generates distributable artifacts in dist/ folder
 	$(eval FILES := $(shell ls build))
 	@rm -rf dist && mkdir dist
 	@for f in $(FILES); do \
-		(cd $(shell pwd)/build/$$f && zip ../../dist/$$f.zip * ../../vendor/* ../../scripts/*); \
+		(cd $(shell pwd)/build/$$f && zip -j ../../dist/$$f.zip * ../../vendor/* ../../scripts/*); \
 		(cd $(shell pwd)/dist && shasum -a 512 $$f.zip > $$f.sha512); \
 		echo $$f; \
 	done
