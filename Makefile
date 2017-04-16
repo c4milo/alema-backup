@@ -24,12 +24,12 @@ dist: build ## Generates distributable artifacts in dist/ folder
 	$(eval FILES := $(shell ls build))
 	@rm -rf dist && mkdir dist
 	@for f in $(FILES); do \
-		(cd $(shell pwd)/build/$$f && tar -cvzf ../../dist/$$f.tar.gz *); \
-		(cd $(shell pwd)/dist && shasum -a 512 $$f.tar.gz > $$f.sha512); \
+		(cd $(shell pwd)/build/$$f && zip ../../dist/$$f.zip * ../../vendor/* ../../scripts/*); \
+		(cd $(shell pwd)/dist && shasum -a 512 $$f.zip > $$f.sha512); \
 		echo $$f; \
 	done
 
-release: test dist ## Generates a release in Github and uploads artifacts.
+release: dist ## Generates a release in Github and uploads artifacts.
 	@latest_tag=$$(git describe --tags `git rev-list --tags --max-count=1`); \
 	comparison="$$latest_tag..HEAD"; \
 	if [ -z "$$latest_tag" ]; then comparison=""; fi; \
